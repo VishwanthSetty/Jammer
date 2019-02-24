@@ -1,0 +1,15 @@
+use aircrack-ng
+
+0) activate and deactive monitor mode
+1) list of networks present in the area
+2) sending deauth packs one by one
+3) study how to evade this
+
+Now try doing by subprocess from scrach
+
+0) activate and deactive monitor mode
+1) list of networks present in the area
+2) sending deauth packs one by one
+3) solve how to evade from it
+
+create gui for best looking
