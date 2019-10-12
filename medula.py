@@ -1,7 +1,10 @@
 #jam
 
 import sys,os,platform
+import time
 import subprocess
+from threading import Timer
+
 #subprocess.call(["python3","test.py"])
 #abc=subprocess.check_output(["python3","test.py"])
 # print("abc")
@@ -13,39 +16,55 @@ import subprocess
 # 	abc=lists.communicate()
 # print(abc)
 
+
+def find_interface():
+    moni=subprocess.Popen(['iwconfig'],text=True,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    all_infac,err=(moni.communicate())
+    wireless_inter=all_infac.split("\n")[0].split()[0]
+    return wireless_inter
+
+def start_monitorMode():
+    IFace=find_interface()
+    # act_Mon1_string="sudo ip link set "+IFace+" down"
+    # act_Mon2_string="sudo iw "+IFace+" set monitor control"
+    # act_Mon3_string="sudo ip link set "+IFace+" up"
+    # cmd1=subprocess.Popen(act_Mon1_string.split(" "),)
+    # cmd2=subprocess.Popen(act_Mon2_string.split(" "),)
+    # cmd3=subprocess.Popen(act_Mon3_string.split(" "),)
+    #
+    # print("\t\t\tShould disabled network Manager \nPress y/n (yes/no)")
+    # x=input()
+    # if(x=='y'):
+    #     dis_networkManager_string="service NetworkManager stop"
+    #     # cmd4=subprocess.Popen(act_Mon3_string.split(" "),)
+    # else:
+    #     print("Cant continue with out disabling network")
+    act_mon="sudo airmon-ng start "+IFace
+    cmd_start_mon=subprocess.Popen(act_mon.split(" "),text=True,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    cmd_start_mon.wait()
+    # cmd_start_mon.terminate()
+    # print(get_InterFace)
+
+
+
+def getting_bssid():
+    InterFace=find_interface()
+    act_bssid="sudo airodump-ng "+InterFace
+    cmd_bssid=subprocess.Popen(act_bssid.split(" "),text=True,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    pass
+
+
+
 def medula():
     print("medu the wifi y/n")
     x=input()
     if(x=="y"):
-        start_monitorMode()
-        
+        # start_monitorMode()
+        getting_bssid()
+        print("yahooo")
+
     else:
         medula()
-def start_monitorMode():
-    IFace=find_interface()
-    act_Mon1_string="sudo ip link set "+IFace+" down"
-    act_Mon2_string="sudo iw "+IFace+" set monitor control"
-    act_Mon3_string="sudo ip link set "+IFace+" up"
-    cmd1=subprocess.Popen(act_Mon1_string.split(" "),)
-    cmd2=subprocess.Popen(act_Mon2_string.split(" "),)
-    cmd3=subprocess.Popen(act_Mon3_string.split(" "),)
-
-    print("\t\t\tShould disabled network Manager \n Press y/n (yes/no)")
-    x=input()
-    if(x=='y'):
-        dis_networkManager_string="service NetworkManager stop"
-        # cmd4=subprocess.Popen(act_Mon3_string.split(" "),)
-    else:
-        print("Cant continue with out disabling network")
-
-
-
-def find_interface():
-    moni=subprocess.Popen(['iwconfig'],text=True,stdout=subprocess.PIPE)
-    all_infac=(moni.communicate())
-    wireless_inter=all_infac[0].split("\n")[0]
-    wireless_inter=wireless_inter[0:5]
-    return wireless_inter
 
 system_os=platform.system()
 print(system_os)
