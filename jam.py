@@ -12,20 +12,42 @@
 
 
 import subprocess
-
+import os
 from threading import Timer
 
 kill = lambda process: process.kill()
-cmd = ['ping', 'www.google.com']
-ping = subprocess.Popen(
-    cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-my_timer = Timer(5, kill, [ping])
-
+cmd = "sudo timeout 10s airodump-ng -w out --output-format csv wlan0mon"
+# cmd = ['timeout','5s', 'airodump-ng','wlan0mon']
+# subprocess.call(cmd)
+# os.system("timeout 10s airodump-ng wlan0mon")
 try:
-    my_timer.start()
-    stdout, stderr = ping.communicate()
-finally:
-    my_timer.cancel()
+    ping = subprocess.run(
+        cmd.split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE,check=True,timeout=10,)
+except subprocess.TimeoutExpired:
+    # Handle exception
+    print("sucessfull data")
 
-print(stdout)
+
+
+# my_timer = Timer(5, kill, [ping])
+#
+# try:
+#     my_timer.start()
+#     p=1234
+#     ping.wait()
+# finally:
+#     my_timer.cancel()
+
+# print(stdout)
+
+
+
+
+# import subprocess
+# import sys
+# with open('output.txt', 'w') as f:  # replace 'w' with 'wb' for Python 3
+#     cmd = ['timeout','5s', 'airodump-ng','wlan0mon']
+#     process = subprocess.Popen(cmd, text=True, stdout=subprocess.PIPE)
+#     for c in iter(lambda: process.stdout.read(1), b''):  # replace '' with b'' for Python 3
+#         sys.stdout.write(c)
+#         f.write(c)

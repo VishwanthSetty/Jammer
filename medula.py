@@ -42,15 +42,25 @@ def start_monitorMode():
     act_mon="sudo airmon-ng start "+IFace
     cmd_start_mon=subprocess.Popen(act_mon.split(" "),text=True,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     cmd_start_mon.wait()
-    # cmd_start_mon.terminate()
+    cmd_start_mon.terminate()
     # print(get_InterFace)
 
 
 
 def getting_bssid():
     InterFace=find_interface()
-    act_bssid="sudo airodump-ng "+InterFace
-    cmd_bssid=subprocess.Popen(act_bssid.split(" "),text=True,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    act_bssid="timeout 10s airodump-ng -w out --output-format csv "+InterFace
+    print(act_bssid.split())
+    try:
+        cmd_bssid = subprocess.run(
+            act_bssid.split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE,check=True,timeout=10,)
+    except subprocess.TimeoutExpired:
+        # Handle exception
+        print("sucessfull data")
+
+    # print(stdout)
+
+
     pass
 
 
