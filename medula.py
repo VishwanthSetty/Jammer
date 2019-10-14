@@ -4,6 +4,8 @@ import sys,os,platform
 import time
 import subprocess
 from threading import Timer
+import pandas as pd
+
 
 #subprocess.call(["python3","test.py"])
 #abc=subprocess.check_output(["python3","test.py"])
@@ -58,7 +60,10 @@ def getting_bssid():
         # Handle exception
         print("sucessfull data")
 
-    # print(stdout)
+    read_file = pd.read_csv('./out-01.csv')
+    bssids = a.loc[:,['BSSID',' channel',' ESSID']]
+    bssids = bssids.dropna()
+
 
 
     pass

@@ -11,21 +11,21 @@
 #  process.terminate()
 
 
-import subprocess
-import os
-from threading import Timer
-
-kill = lambda process: process.kill()
-cmd = "sudo timeout 10s airodump-ng -w out --output-format csv wlan0mon"
-# cmd = ['timeout','5s', 'airodump-ng','wlan0mon']
-# subprocess.call(cmd)
-# os.system("timeout 10s airodump-ng wlan0mon")
-try:
-    ping = subprocess.run(
-        cmd.split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE,check=True,timeout=10,)
-except subprocess.TimeoutExpired:
-    # Handle exception
-    print("sucessfull data")
+# import subprocess
+# import os
+# from threading import Timer
+#
+# kill = lambda process: process.kill()
+# cmd = "sudo timeout 10s airodump-ng -w out --output-format csv wlan0mon"
+# # cmd = ['timeout','5s', 'airodump-ng','wlan0mon']
+# # subprocess.call(cmd)
+# # os.system("timeout 10s airodump-ng wlan0mon")
+# try:
+#     ping = subprocess.run(
+#         cmd.split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE,check=True,timeout=10,)
+# except subprocess.TimeoutExpired:
+#     # Handle exception
+#     print("sucessfull data")
 
 
 
@@ -51,3 +51,8 @@ except subprocess.TimeoutExpired:
 #     for c in iter(lambda: process.stdout.read(1), b''):  # replace '' with b'' for Python 3
 #         sys.stdout.write(c)
 #         f.write(c)
+
+import pandas as pd
+a = pd.read_csv('./out-*')
+list=a.loc[:,['BSSID',' channel',' ESSID']]
+print(list.dropna())
