@@ -53,6 +53,12 @@
 #         f.write(c)
 
 import pandas as pd
-a = pd.read_csv('./out-*')
-list=a.loc[:,['BSSID',' channel',' ESSID']]
-print(list.dropna())
+a = pd.read_csv('./out-01.csv')
+print(type(a))
+a=a.sort_values(" Power",ascending = False,)
+a= a.loc[(a[" Power"]<=-10) & (a[" Power"]>=-80)]
+# print(a)
+list=a.loc[:,['BSSID',' channel',' ESSID',' Power']]
+list = list.dropna()
+print(list)
+# print(list.dropna())

